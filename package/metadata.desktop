@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=Fokus
+Comment= Pomodoro timer plasmoid
+
+Icon=pomodoro-start-light
+Type=Service
+X-KDE-ServiceTypes=Plasma/Applet
+
+X-Plasma-API=declarativeappletscript
+X-Plasma-MainScript=ui/main.qml
+
+X-KDE-PluginInfo-Author=Jakub Lipinski
+X-KDE-PluginInfo-Email=lipinski.jb@gmail.com
+X-KDE-PluginInfo-Name=fokus
+X-KDE-PluginInfo-Version=1.0.0
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Category=Pomodoro
+X-KDE-PluginInfo-License=GPL
