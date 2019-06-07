@@ -109,7 +109,7 @@ Item {
             textTimer.start()
             sessionBtn.text = "Pause"
             sessionBtn.iconSource= "media-playback-pause"
-            customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-53.svg")
+            customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-61.svg")
         }
 
         function pause() {
@@ -223,6 +223,8 @@ Item {
 
                     function update() {
                         time.text = formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
+
+                        customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-" + Math.floor((currTime/maxTime) * 61) + ".svg")
                     }
                 }
 
