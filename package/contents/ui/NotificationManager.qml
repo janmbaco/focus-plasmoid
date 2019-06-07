@@ -12,56 +12,56 @@ QtObject {
     }
 
     function start(args) {
-        switch(args) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-                createNotification({
-                    appName: "fokus",
-                    appIcon: "chronometer-start",
-                    summary: "Focus",
-                    body: "Focus on your work!",
-                })
-                break;
-            case 2:
-            case 4:
-            case 6:
-                createNotification({
-                    appName: "fokus",
-                    appIcon: "chronometer-start",
-                    summary: "Short Break",
-                    body: "Go for a walk.",
-                })
-                break;
-            case 8:
-                createNotification({
-                    appName: "fokus",
-                    appIcon: "chronometer-start",
-                    summary: "Long Break",
-                    body: "Take a long break!",
-                })
-                break;
+        switch (args) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+            createNotification({
+                                   "appName": "fokus",
+                                   "appIcon": "chronometer-start",
+                                   "summary": "Focus",
+                                   "body": "Focus on your work!"
+                               })
+            break
+        case 2:
+        case 4:
+        case 6:
+            createNotification({
+                                   "appName": "fokus",
+                                   "appIcon": "chronometer-start",
+                                   "summary": "Short Break",
+                                   "body": "Go for a walk."
+                               })
+            break
+        case 8:
+            createNotification({
+                                   "appName": "fokus",
+                                   "appIcon": "chronometer-start",
+                                   "summary": "Long Break",
+                                   "body": "Take a long break!"
+                               })
+            break
         }
     }
 
     function end(args) {
         createNotification({
-            appName: "fokus",
-            appIcon: "chronometer",
-            summary: "Focus",
-            body: "End of time.",
-            soundFile: "/usr/share/sounds/freedesktop/stereo/complete.oga"
-        })
+                               "appName": "fokus",
+                               "appIcon": "chronometer",
+                               "summary": "Focus",
+                               "body": "End of time.",
+                               "soundFile": "/usr/share/sounds/freedesktop/stereo/complete.oga"
+                           })
     }
 
     function stop(args) {
         createNotification({
-            appName: "fokus",
-            appIcon: "chronometer",
-            summary: "Focus",
-            body: "Session stopped.",
-        })
+                               "appName": "fokus",
+                               "appIcon": "chronometer",
+                               "summary": "Focus",
+                               "body": "Session stopped."
+                           })
     }
 
     function createNotification(args) {
@@ -84,5 +84,6 @@ QtObject {
         }
     }
 
-    property Audio sfx: Audio {}
+    property Audio sfx: Audio {
+    }
 }

@@ -19,20 +19,24 @@ Item {
     property var stateVal: 1
     property var maxTime: plasmoid.configuration.focusTime * 60
     property var currTime: plasmoid.configuration.focusTime * 60
-    property var customIconSource: plasmoid.file("", "icons/pomodoro-start-light.svg")
+    property var customIconSource: plasmoid.file(
+                                       "", "icons/pomodoro-start-light.svg")
 
     function formatNumberLength(num, length) {
-        var r = "" + num;
+        var r = "" + num
         while (r.length < length) {
-            r = "0" + r;
+            r = "0" + r
         }
 
-        return r;
+        return r
     }
 
-    NotificationManager { id: notificationManager }
+    NotificationManager {
+        id: notificationManager
+    }
 
-    Plasmoid.toolTipMainText: formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
+    Plasmoid.toolTipMainText: formatNumberLength(
+                                  min, 2) + ":" + formatNumberLength(sec, 2)
     Plasmoid.toolTipSubText: ""
 
     Plasmoid.compactRepresentation: MouseArea {
@@ -64,7 +68,7 @@ Item {
         Layout.maximumHeight: units.gridUnit * 10
 
         property bool isPinVisible: {
-            return plasmoid.location != PlasmaCore.Types.Floating
+            return plasmoid.location !== PlasmaCore.Types.Floating
         }
 
         RowLayout {
@@ -87,7 +91,7 @@ Item {
                 implicitWidth: minimumWidth
                 iconSource: "media-playback-start"
                 onClicked: {
-                    if(sessionBtn.text == "Start") {
+                    if (sessionBtn.text == "Start") {
                         start()
                     } else {
                         pause()
@@ -108,15 +112,17 @@ Item {
             notificationManager.start(stateVal)
             textTimer.start()
             sessionBtn.text = "Pause"
-            sessionBtn.iconSource= "media-playback-pause"
-            customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-61.svg")
+            sessionBtn.iconSource = "media-playback-pause"
+            customIconSource = plasmoid.file(
+                        "", "icons/pomodoro-indicator-light-61.svg")
         }
 
         function pause() {
             textTimer.stop()
             sessionBtn.text = "Start"
-            sessionBtn.iconSource= "media-playback-start"
-            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
+            sessionBtn.iconSource = "media-playback-start"
+            customIconSource = plasmoid.file("",
+                                             "icons/pomodoro-start-light.svg")
         }
 
         function skip() {
@@ -130,39 +136,41 @@ Item {
             stateVal = 1
             resetTime()
             sessionBtn.text = "Start"
-            sessionBtn.iconSource= "media-playback-start"
-            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
+            sessionBtn.iconSource = "media-playback-start"
+            customIconSource = plasmoid.file("",
+                                             "icons/pomodoro-start-light.svg")
         }
 
         function end() {
             notificationManager.end()
             textTimer.stop()
             sessionBtn.text = "Start"
-            sessionBtn.iconSource= "media-playback-start"
-            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
+            sessionBtn.iconSource = "media-playback-start"
+            customIconSource = plasmoid.file("",
+                                             "icons/pomodoro-start-light.svg")
             nextState()
             resetTime()
         }
 
         function resetTime() {
-            switch(stateVal) {
-                case 1:
-                case 3:
-                case 5:
-                case 7:
-                    min = plasmoid.configuration.focusTime
-                    status.text = "focus"
-                    break;
-                case 2:
-                case 4:
-                case 6:
-                    min = plasmoid.configuration.shortBreakTime
-                    status.text = "short break"
-                    break;
-                case 8:
-                    min = plasmoid.configuration.longBreakTime
-                    status.text = "long break"
-                    break;
+            switch (stateVal) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+                min = plasmoid.configuration.focusTime
+                status.text = "focus"
+                break
+            case 2:
+            case 4:
+            case 6:
+                min = plasmoid.configuration.shortBreakTime
+                status.text = "short break"
+                break
+            case 8:
+                min = plasmoid.configuration.longBreakTime
+                status.text = "long break"
+                break
             }
 
             sec = 0
@@ -172,7 +180,7 @@ Item {
         }
 
         function nextState() {
-            if(stateVal < 8) {
+            if (stateVal < 8) {
                 stateVal++
             } else {
                 stateVal = 1
@@ -195,17 +203,19 @@ Item {
             anchors.bottom: fullRoot.bottom
 
             Column {
-                anchors.centerIn: parent;
-                height: time.height 
+                anchors.centerIn: parent
+                height: time.height
 
                 PlasmaComponents.Label {
                     id: time
-                    text: formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
-                    font.pointSize: fullRoot.width/6
+                    text: formatNumberLength(min,
+                                             2) + ":" + formatNumberLength(sec,
+                                                                           2)
+                    font.pointSize: fullRoot.width / 6
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     function set() {
-                        if(sec == 0) {
+                        if (sec == 0) {
                             min--
                             sec = 59
                         } else {
@@ -214,7 +224,7 @@ Item {
 
                         currTime--
 
-                        if(currTime == 0) {
+                        if (currTime == 0) {
                             end()
                         }
 
@@ -222,23 +232,31 @@ Item {
                     }
 
                     function update() {
-                        time.text = formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
+                        time.text = formatNumberLength(
+                                    min, 2) + ":" + formatNumberLength(sec, 2)
 
-                        customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-" + formatNumberLength(Math.ceil((currTime/maxTime) * 61),2) + ".svg")
+                        if (textTimer.running) {
+                            customIconSource = plasmoid.file(
+                                        "",
+                                        "icons/pomodoro-indicator-light-" + formatNumberLength(
+                                            Math.ceil(
+                                                (currTime / maxTime) * 61),
+                                            2) + ".svg")
+                        }
                     }
                 }
 
                 Controls.PageIndicator {
                     id: pageIndicator
                     count: 4
-                    currentIndex: (stateVal - 1)/2
+                    currentIndex: (stateVal - 1) / 2
 
                     anchors.bottom: time.top
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    spacing: fullRoot.width/25
+                    spacing: fullRoot.width / 25
                     delegate: Rectangle {
-                        implicitWidth: fullRoot.width/25
+                        implicitWidth: fullRoot.width / 25
                         implicitHeight: width
                         radius: width / 2
                         color: theme.textColor
@@ -256,7 +274,7 @@ Item {
                 PlasmaComponents.Label {
                     id: status
                     text: "focus"
-                    font.pointSize: fullRoot.width/15
+                    font.pointSize: fullRoot.width / 15
                     anchors.top: time.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                 }

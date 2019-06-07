@@ -42,7 +42,8 @@ ColumnLayout {
         }
     }
 
-     Item { // tighten layout
-         Layout.fillHeight: true
-     }
+    Item {
+        // tighten layout
+        Layout.fillHeight: true
+    }
 }
