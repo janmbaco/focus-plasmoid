@@ -64,8 +64,8 @@ Item {
 
         Layout.minimumWidth: units.gridUnit * 12
         Layout.maximumWidth: units.gridUnit * 12
-        Layout.minimumHeight: units.gridUnit * 10
-        Layout.maximumHeight: units.gridUnit * 10
+        Layout.minimumHeight: units.gridUnit * 11
+        Layout.maximumHeight: units.gridUnit * 11
 
         property bool isPinVisible: {
             return plasmoid.location !== PlasmaCore.Types.Floating
@@ -202,6 +202,16 @@ Item {
             anchors.right: fullRoot.right
             anchors.bottom: fullRoot.bottom
 
+            ProgressCircle {
+                id: progressCircle
+                anchors.centerIn: parent
+                size: Math.min(parent.width / 1.1, parent.height / 1.1)
+                colorCircle: theme.buttonFocusColor
+                arcBegin: 0
+                arcEnd: Math.ceil((currTime / maxTime) * 360)
+                lineWidth: size / 20
+            }
+
             Column {
                 anchors.centerIn: parent
                 height: time.height
@@ -211,7 +221,7 @@ Item {
                     text: formatNumberLength(min,
                                              2) + ":" + formatNumberLength(sec,
                                                                            2)
-                    font.pointSize: fullRoot.width / 7
+                    font.pointSize: progressCircle.width / 7
                     font.family: 'monospace'
                     anchors.horizontalCenter: parent.horizontalCenter
 
@@ -255,9 +265,9 @@ Item {
                     anchors.bottom: time.top
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    spacing: fullRoot.width / 25
+                    spacing: progressCircle.width / 25
                     delegate: Rectangle {
-                        implicitWidth: fullRoot.width / 25
+                        implicitWidth: progressCircle.width / 25
                         implicitHeight: width
                         radius: width / 2
                         color: theme.textColor
@@ -275,7 +285,7 @@ Item {
                 PlasmaComponents.Label {
                     id: status
                     text: "focus"
-                    font.pointSize: fullRoot.width / 15
+                    font.pointSize: progressCircle.width / 15
                     anchors.top: time.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
