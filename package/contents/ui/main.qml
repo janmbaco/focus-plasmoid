@@ -1,7 +1,7 @@
-﻿import QtQuick 2.7
+﻿import QtQuick 2.5
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.5 as Controls
-import QtQuick.Window 2.7
+import QtQuick.Window 2.5
 
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -10,19 +10,29 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Item {
     id: root
 
-    readonly property bool isVertical: plasmoid.formFactor === PlasmaCore.Types.Vertical
-
     Plasmoid.switchWidth: units.gridUnit * 10
     Plasmoid.switchHeight: units.gridUnit * 12
 
-    property var min: 25
+    property var min: plasmoid.configuration.focusTime
     property var sec: 0
     property var stateVal: 1
-    property var maxTime: 1500
-    property var currTime: 1500
+    property var maxTime: plasmoid.configuration.focusTime * 60
+    property var currTime: plasmoid.configuration.focusTime * 60
     property var customIconSource: "pomodoro-start-light"
 
+    function formatNumberLength(num, length) {
+        var r = "" + num;
+        while (r.length < length) {
+            r = "0" + r;
+        }
+
+        return r;
+    }
+
     NotificationManager { id: notificationManager }
+
+    Plasmoid.toolTipMainText: formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
+    Plasmoid.toolTipSubText: ""
 
     Plasmoid.compactRepresentation: MouseArea {
         id: compactRoot
@@ -107,6 +117,7 @@ Item {
         }
 
         function stop() {
+            notificationManager.stop()
             textTimer.stop()
             stateVal = 1
             resetTime()
@@ -126,33 +137,29 @@ Item {
         }
 
         function resetTime() {
-            sec = 0
             switch(stateVal) {
                 case 1:
                 case 3:
                 case 5:
                 case 7:
-                    min = 25
-                    currTime = 1500
-                    maxTime = 1500
+                    min = plasmoid.configuration.focusTime
                     status.text = "focus"
                     break;
                 case 2:
                 case 4:
                 case 6:
-                    min = 5
-                    currTime = 300
-                    maxTime = 300
+                    min = plasmoid.configuration.shortBreakTime
                     status.text = "short break"
                     break;
                 case 8:
-                    min = 20
-                    currTime = 1200
-                    maxTime = 1200
+                    min = plasmoid.configuration.longBreakTime
                     status.text = "long break"
                     break;
             }
 
+            sec = 0
+            currTime = min * 60
+            maxTime = currTime
             time.update()
         }
 
@@ -209,14 +216,6 @@ Item {
                     function update() {
                         time.text = formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
                     }
-
-                    function formatNumberLength(num, length) {
-                        var r = "" + num;
-                        while (r.length < length) {
-                            r = "0" + r;
-                        }
-                        return r;
-                    }
                 }
 
                 Controls.PageIndicator {
@@ -232,9 +231,9 @@ Item {
                         implicitWidth: fullRoot.width/25
                         implicitHeight: width
                         radius: width / 2
-                        color: theme.activeTextColor
+                        color: theme.negativeTextColor
 
-                        opacity: index === pageIndicator.currentIndex ? 0.95 : 0.3
+                        opacity: index === pageIndicator.currentIndex ? 0.95 : 0.45
 
                         Behavior on opacity {
                             OpacityAnimator {

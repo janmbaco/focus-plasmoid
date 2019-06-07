@@ -45,13 +45,23 @@ QtObject {
                 break;
         }
     }
-    
+
     function end(args) {
         createNotification({
             appName: "fokus",
             appIcon: "pomodoro-start-light",
             summary: "Focus",
             body: "End of time.",
+            soundFile: "/usr/share/sounds/freedesktop/stereo/complete.oga"
+        })
+    }
+
+    function stop(args) {
+        createNotification({
+            appName: "fokus",
+            appIcon: "pomodoro-stop-light",
+            summary: "Focus",
+            body: "Session stopped.",
         })
     }
 
