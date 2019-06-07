@@ -224,7 +224,7 @@ Item {
                     function update() {
                         time.text = formatNumberLength(min,2) + ":" + formatNumberLength(sec,2)
 
-                        customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-" + Math.floor((currTime/maxTime) * 61) + ".svg")
+                        customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-" + formatNumberLength(Math.ceil((currTime/maxTime) * 61),2) + ".svg")
                     }
                 }
 
@@ -241,7 +241,7 @@ Item {
                         implicitWidth: fullRoot.width/25
                         implicitHeight: width
                         radius: width / 2
-                        color: theme.negativeTextColor
+                        color: theme.textColor
 
                         opacity: index === pageIndicator.currentIndex ? 0.95 : 0.45
 
