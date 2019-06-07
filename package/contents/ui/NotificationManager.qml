@@ -11,7 +11,6 @@ QtObject {
         connectedSources: "org.freedesktop.Notifications"
     }
 
-
     function start(args) {
         switch(args) {
             case 1:
@@ -20,7 +19,7 @@ QtObject {
             case 7:
                 createNotification({
                     appName: "fokus",
-                    appIcon: "pomodoro-start-light",
+                    appIcon: "chronometer-start",
                     summary: "Focus",
                     body: "Focus on your work!",
                 })
@@ -30,7 +29,7 @@ QtObject {
             case 6:
                 createNotification({
                     appName: "fokus",
-                    appIcon: "pomodoro-start-light",
+                    appIcon: "chronometer-start",
                     summary: "Short Break",
                     body: "Go for a walk.",
                 })
@@ -38,7 +37,7 @@ QtObject {
             case 8:
                 createNotification({
                     appName: "fokus",
-                    appIcon: "pomodoro-start-light",
+                    appIcon: "chronometer-start",
                     summary: "Long Break",
                     body: "Take a long break!",
                 })
@@ -49,7 +48,7 @@ QtObject {
     function end(args) {
         createNotification({
             appName: "fokus",
-            appIcon: "pomodoro-start-light",
+            appIcon: "chronometer",
             summary: "Focus",
             body: "End of time.",
             soundFile: "/usr/share/sounds/freedesktop/stereo/complete.oga"
@@ -59,7 +58,7 @@ QtObject {
     function stop(args) {
         createNotification({
             appName: "fokus",
-            appIcon: "pomodoro-stop-light",
+            appIcon: "chronometer",
             summary: "Focus",
             body: "Session stopped.",
         })

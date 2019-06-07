@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=Fokus
-Comment= Pomodoro timer plasmoid
+Comment=Pomodoro timer plasmoid
 
-Icon=pomodoro-start-light
+Icon=chronometer
 Type=Service
 X-KDE-ServiceTypes=Plasma/Applet
 

@@ -2,6 +2,7 @@
 import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.5 as Controls
 import QtQuick.Window 2.5
+import QtGraphicalEffects 1.0
 
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -18,7 +19,7 @@ Item {
     property var stateVal: 1
     property var maxTime: plasmoid.configuration.focusTime * 60
     property var currTime: plasmoid.configuration.focusTime * 60
-    property var customIconSource: "pomodoro-start-light"
+    property var customIconSource: plasmoid.file("", "icons/pomodoro-start-light.svg")
 
     function formatNumberLength(num, length) {
         var r = "" + num;
@@ -40,10 +41,17 @@ Item {
         onClicked: plasmoid.expanded = !plasmoid.expanded
 
         PlasmaCore.IconItem {
+            id: trayIcon
             width: height
             height: compactRoot.height
             Layout.preferredWidth: height
             source: customIconSource
+        }
+
+        ColorOverlay {
+            anchors.fill: trayIcon
+            source: trayIcon
+            color: theme.textColor
         }
     }
 
@@ -101,14 +109,14 @@ Item {
             textTimer.start()
             sessionBtn.text = "Pause"
             sessionBtn.iconSource= "media-playback-pause"
-            customIconSource = "pomodoro-indicator-light-53"
+            customIconSource = plasmoid.file("", "icons/pomodoro-indicator-light-53.svg")
         }
 
         function pause() {
             textTimer.stop()
             sessionBtn.text = "Start"
             sessionBtn.iconSource= "media-playback-start"
-            customIconSource = "pomodoro-start-light"
+            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
         }
 
         function skip() {
@@ -123,7 +131,7 @@ Item {
             resetTime()
             sessionBtn.text = "Start"
             sessionBtn.iconSource= "media-playback-start"
-            customIconSource = "pomodoro-start-light"
+            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
         }
 
         function end() {
@@ -131,7 +139,7 @@ Item {
             textTimer.stop()
             sessionBtn.text = "Start"
             sessionBtn.iconSource= "media-playback-start"
-            customIconSource = "pomodoro-start-light"
+            customIconSource = plasmoid.file("", "icons/pomodoro-start-light.svg")
             nextState()
             resetTime()
         }
