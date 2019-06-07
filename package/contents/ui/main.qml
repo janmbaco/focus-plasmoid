@@ -22,6 +22,8 @@ Item {
     property var currTime: 1500
     property var customIconSource: "pomodoro-start-light"
 
+    NotificationManager { id: notificationManager }
+
     Plasmoid.compactRepresentation: MouseArea {
         id: compactRoot
 
@@ -43,10 +45,14 @@ Item {
         Layout.minimumHeight: units.gridUnit * 10
         Layout.maximumHeight: units.gridUnit * 10
 
+        property bool isPinVisible: {
+            return plasmoid.location != PlasmaCore.Types.Floating
+        }
+
         RowLayout {
             id: buttonsRow
             spacing: 8
-            
+
             anchors.horizontalCenter: parent.horizontalCenter
 
             PlasmaComponents.Button {
@@ -80,8 +86,8 @@ Item {
             }
         }
 
-        function start(){
-            // notify.notify(stateVal);
+        function start() {
+            notificationManager.start(stateVal)
             textTimer.start()
             sessionBtn.text = "Pause"
             sessionBtn.iconSource= "media-playback-pause"
@@ -110,8 +116,8 @@ Item {
         }
 
         function end() {
+            notificationManager.end()
             textTimer.stop()
-            // notify.notify(4);
             sessionBtn.text = "Start"
             sessionBtn.iconSource= "media-playback-start"
             customIconSource = "pomodoro-start-light"
@@ -226,7 +232,7 @@ Item {
                         implicitWidth: fullRoot.width/25
                         implicitHeight: width
                         radius: width / 2
-                        color: Kirigami.Theme.negativeTextColor
+                        color: theme.activeTextColor
 
                         opacity: index === pageIndicator.currentIndex ? 0.95 : 0.3
 
@@ -246,6 +252,24 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
             }
+        }
+
+        Binding {
+            target: plasmoid
+            property: "hideOnWindowDeactivate"
+            value: !plasmoid.configuration.pin
+        }
+
+        PlasmaComponents.ToolButton {
+            visible: isPinVisible
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            width: Math.round(units.gridUnit * 1.25)
+            height: width
+            checkable: true
+            iconSource: "window-pin"
+            checked: plasmoid.configuration.pin
+            onCheckedChanged: plasmoid.configuration.pin = checked
         }
     }
 }
