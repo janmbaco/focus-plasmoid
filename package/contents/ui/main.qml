@@ -211,7 +211,8 @@ Item {
                     text: formatNumberLength(min,
                                              2) + ":" + formatNumberLength(sec,
                                                                            2)
-                    font.pointSize: fullRoot.width / 6
+                    font.pointSize: fullRoot.width / 8
+                    font.family: 'monospace'
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     function set() {
