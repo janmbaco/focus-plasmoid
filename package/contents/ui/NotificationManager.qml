@@ -21,7 +21,8 @@ QtObject {
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
                                    "summary": "Focus",
-                                   "body": "Focus on your work!"
+                                   "body": "Focus on your work!",
+                                   "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
         case 2:
@@ -31,7 +32,8 @@ QtObject {
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
                                    "summary": "Short Break",
-                                   "body": "Go for a walk."
+                                   "body": "Go for a walk.",
+                                   "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
         case 8:
@@ -39,7 +41,8 @@ QtObject {
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
                                    "summary": "Long Break",
-                                   "body": "Take a long break!"
+                                   "body": "Take a long break!",
+                                   "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
         }
@@ -51,7 +54,7 @@ QtObject {
                                "appIcon": "chronometer",
                                "summary": "Focus",
                                "body": "End of time.",
-                               "soundFile": "/usr/share/sounds/freedesktop/stereo/complete.oga"
+                               "soundFile": plasmoid.configuration.timer_stop_sfx_enabled ? plasmoid.configuration.timer_stop_sfx_filepath : undefined
                            })
     }
 

@@ -16,11 +16,11 @@ Item {
 
     property string clock_fontfamily: plasmoid.configuration.clock_fontfamily || "Noto Mono"
 
-    property var min: plasmoid.configuration.focusTime
+    property var min: plasmoid.configuration.focus_time
     property var sec: 0
     property var stateVal: 1
-    property var maxTime: plasmoid.configuration.focusTime * 60
-    property var currTime: plasmoid.configuration.focusTime * 60
+    property var maxTime: plasmoid.configuration.focus_time * 60
+    property var currTime: plasmoid.configuration.focus_time * 60
     property var customIconSource: plasmoid.file(
                                        "", "icons/pomodoro-start-light.svg")
 
@@ -342,17 +342,17 @@ Item {
             case 3:
             case 5:
             case 7:
-                min = plasmoid.configuration.focusTime
+                min = plasmoid.configuration.focus_time
                 status.text = "focus"
                 break
             case 2:
             case 4:
             case 6:
-                min = plasmoid.configuration.shortBreakTime
+                min = plasmoid.configuration.short_break_time
                 status.text = "short break"
                 break
             case 8:
-                min = plasmoid.configuration.longBreakTime
+                min = plasmoid.configuration.long_break_time
                 status.text = "long break"
                 break
             }

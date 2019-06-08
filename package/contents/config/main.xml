@@ -6,17 +6,29 @@
   <kcfgfile name=""/>
 
   <group name="General">
-    <entry name="focusTime" type="UInt">
+    <entry name="focus_time" type="UInt">
       <default>25</default>
     </entry>
-        <entry name="shortBreakTime" type="UInt">
+        <entry name="short_break_time" type="UInt">
       <default>5</default>
     </entry>
-        <entry name="longBreakTime" type="UInt">
+        <entry name="long_break_time" type="UInt">
       <default>20</default>
     </entry>
     <entry name="clock_fontfamily" type="string">
         <default></default>
+    </entry>
+    <entry name="timer_start_sfx_enabled" type="bool">
+        <default>false</default>
+    </entry>
+    <entry name="timer_start_sfx_filepath" type="string">
+        <default>/usr/share/sounds/freedesktop/stereo/dialog-information.oga</default>
+    </entry>
+    <entry name="timer_stop_sfx_enabled" type="bool">
+        <default>true</default>
+    </entry>
+    <entry name="timer_stop_sfx_filepath" type="string">
+        <default>/usr/share/sounds/freedesktop/stereo/complete.oga</default>
     </entry>
   </group>
 </kcfg>
