@@ -117,6 +117,7 @@ ColumnLayout {
         flat: true
 
         ColumnLayout {
+            width: parent.width
             RowLayout {
                 Text { width: indentWidth } // indent
                 CheckBox {
