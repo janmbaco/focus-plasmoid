@@ -108,6 +108,52 @@ Item {
                 bottom: buttonsRow.top
             }
 
+            MouseArea {
+                anchors.fill: parent
+                property int wheelDelta: 0
+
+                function scrollByWheel(wheelDelta, eventDelta) {
+                    // magic number 120 for common "one click"
+                    // See: http://qt-project.org/doc/qt-5/qml-qtquick-wheelevent.html#angleDelta-prop
+                    wheelDelta += eventDelta;
+
+                    var increment = 0;
+
+                    while (wheelDelta >= 120) {
+                        wheelDelta -= 120;
+                        increment++;
+                    }
+
+                    while (wheelDelta <= -120) {
+                        wheelDelta += 120;
+                        increment--;
+                    }
+
+                    while (increment != 0) {
+                        if(increment > 0) {
+                            min += 1
+                            currTime += 60
+                            maxTime += 60
+                        } else {
+                            if(currTime > 60) {
+                                min -= 1
+                                currTime -= 60
+                                maxTime -= 60
+                            }
+                        }
+
+                        time.update()
+                        increment += (increment < 0) ? 1 : -1;
+                    }
+
+                    return wheelDelta;
+                }
+
+                onWheel: {
+                    wheelDelta = scrollByWheel(wheelDelta, wheel.angleDelta.y);
+                }
+            }
+
             ProgressCircle {
                 id: progressCircle
                 anchors.centerIn: parent
