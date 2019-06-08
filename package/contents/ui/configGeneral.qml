@@ -76,7 +76,7 @@ ColumnLayout {
         ColumnLayout {
             RowLayout {
                 Label {
-                    text: i18n("Focus time: ")
+                    text: i18n("Focus: ")
                 }
 
                 SpinBox {
@@ -87,7 +87,7 @@ ColumnLayout {
 
             RowLayout {
                 Label {
-                    text: i18n("Short break time: ")
+                    text: i18n("Short break: ")
                 }
 
                 SpinBox {
@@ -98,7 +98,7 @@ ColumnLayout {
 
             RowLayout {
                 Label {
-                    text: i18n("Long break time: ")
+                    text: i18n("Long break: ")
                 }
 
                 SpinBox {
