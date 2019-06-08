@@ -15,5 +15,8 @@
         <entry name="longBreakTime" type="UInt">
       <default>20</default>
     </entry>
+    <entry name="clock_fontfamily" type="string">
+        <default></default>
+    </entry>
   </group>
 </kcfg>

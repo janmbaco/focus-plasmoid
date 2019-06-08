@@ -14,6 +14,8 @@ Item {
     Plasmoid.switchWidth: units.gridUnit * 10
     Plasmoid.switchHeight: units.gridUnit * 12
 
+    property string clock_fontfamily: plasmoid.configuration.clock_fontfamily || "Noto Mono"
+
     property var min: plasmoid.configuration.focusTime
     property var sec: 0
     property var stateVal: 1
@@ -174,7 +176,7 @@ Item {
                                              2) + ":" + formatNumberLength(sec,
                                                                            2)
                     font.pointSize: progressCircle.width / 7
-                    font.family: 'monospace'
+                    font.family: clock_fontfamily
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     function set() {
