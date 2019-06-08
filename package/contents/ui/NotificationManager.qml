@@ -52,7 +52,7 @@ QtObject {
         createNotification({
                                "appName": "fokus",
                                "appIcon": "chronometer",
-                               "summary": "Focus",
+                               "summary": "End",
                                "body": "End of time.",
                                "soundFile": plasmoid.configuration.timer_stop_sfx_enabled ? plasmoid.configuration.timer_stop_sfx_filepath : undefined
                            })
@@ -62,7 +62,7 @@ QtObject {
         createNotification({
                                "appName": "fokus",
                                "appIcon": "chronometer",
-                               "summary": "Focus",
+                               "summary": "Stop",
                                "body": "Session stopped."
                            })
     }
