@@ -20,8 +20,7 @@ QtObject {
             createNotification({
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
-                                   "summary": "Focus",
-                                   "body": "Focus on your work!",
+                                   "summary": "Focus on your work!",
                                    "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
@@ -31,8 +30,7 @@ QtObject {
             createNotification({
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
-                                   "summary": "Short Break",
-                                   "body": "Go for a walk.",
+                                   "summary": "Go for a walk.",
                                    "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
@@ -40,8 +38,7 @@ QtObject {
             createNotification({
                                    "appName": "fokus",
                                    "appIcon": "chronometer-start",
-                                   "summary": "Long Break",
-                                   "body": "Take a long break!",
+                                   "summary": "Take a long break!",
                                    "soundFile": plasmoid.configuration.timer_start_sfx_enabled ? plasmoid.configuration.timer_start_sfx_filepath : undefined
                                })
             break
@@ -52,8 +49,7 @@ QtObject {
         createNotification({
                                "appName": "fokus",
                                "appIcon": "chronometer",
-                               "summary": "End",
-                               "body": "End of time.",
+                               "summary": "End of time.",
                                "soundFile": plasmoid.configuration.timer_stop_sfx_enabled ? plasmoid.configuration.timer_stop_sfx_filepath : undefined
                            })
     }
