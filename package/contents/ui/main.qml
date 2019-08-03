@@ -1,7 +1,7 @@
-﻿import QtQuick 2.5
+﻿import QtQuick 2.2
 import QtQuick.Layouts 1.1
-import QtQuick.Controls 2.5 as Controls
-import QtQuick.Window 2.5
+import QtQuick.Controls 2.0 as Controls
+import QtQuick.Window 2.0
 import QtGraphicalEffects 1.0
 
 import org.kde.plasma.plasmoid 2.0
