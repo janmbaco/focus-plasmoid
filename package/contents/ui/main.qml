@@ -11,8 +11,8 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 Item {
     id: root
 
-    Plasmoid.switchWidth: units.gridUnit * 10
-    Plasmoid.switchHeight: units.gridUnit * 12
+    Plasmoid.switchWidth: units.gridUnit * 11
+    Plasmoid.switchHeight: units.gridUnit * 11
 
     property string clock_fontfamily: plasmoid.configuration.clock_fontfamily || "Noto Mono"
 
@@ -48,7 +48,7 @@ Item {
 
         PlasmaCore.IconItem {
             id: trayIcon
-            width: height
+            width: compactRoot.width
             height: compactRoot.height
             Layout.preferredWidth: height
             source: customIconSource
@@ -218,7 +218,7 @@ Item {
 
                     anchors {
                         bottom: time.top
-                        horizontalCenter: parent.horizontalCenter   
+                        horizontalCenter: parent.horizontalCenter
                     }
 
                     spacing: progressCircle.width / 25
