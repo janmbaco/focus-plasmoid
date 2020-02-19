@@ -30,5 +30,8 @@
     <entry name="timer_stop_sfx_filepath" type="string">
         <default>/usr/share/sounds/freedesktop/stereo/complete.oga</default>
     </entry>
+    <entry name="timer_auto_next_enabled" type="bool">
+        <default>false</default>
+    </entry>
   </group>
 </kcfg>

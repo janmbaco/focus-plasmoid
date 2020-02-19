@@ -14,6 +14,7 @@ ColumnLayout {
     property alias cfg_timer_start_sfx_filepath: timer_start_sfx_filepath.text
     property alias cfg_timer_stop_sfx_enabled: timer_stop_sfx_enabled.checked
     property alias cfg_timer_stop_sfx_filepath: timer_stop_sfx_filepath.text
+    property alias cfg_timer_auto_next_enabled: timer_auto_next_enabled.checked
 
     onCfg_clock_fontfamilyChanged: {
         if (cfg_clock_fontfamily) {
@@ -74,6 +75,16 @@ ColumnLayout {
         flat: true
 
         ColumnLayout {
+            RowLayout {
+                Label {
+                    text: i18n("Automatically start next timer: ")
+                }
+
+                CheckBox {
+                    id: timer_auto_next_enabled
+                }
+            }
+
             RowLayout {
                 Label {
                     text: i18n("Focus: ")

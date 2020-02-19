@@ -334,6 +334,10 @@ Item {
                                              "icons/pomodoro-start-light.svg")
             nextState()
             resetTime()
+
+            if (plasmoid.configuration.timer_auto_next_enabled) {
+                start()
+            }
         }
 
         function resetTime() {
