@@ -15,6 +15,19 @@ ColumnLayout {
     property alias cfg_timer_stop_sfx_enabled: timer_stop_sfx_enabled.checked
     property alias cfg_timer_stop_sfx_filepath: timer_stop_sfx_filepath.text
     property alias cfg_timer_auto_next_enabled: timer_auto_next_enabled.checked
+    property alias cfg_stop_script_filepath: stop_script_filepath.text
+    property alias cfg_stop_script_enabled: stop_script_enabled.checked
+
+    property alias cfg_start_focus_script_filepath: start_focus_script_filepath.text
+    property alias cfg_start_focus_script_enabled: start_focus_script_enabled.checked
+    property alias cfg_start_break_script_filepath: start_break_script_filepath.text
+    property alias cfg_start_break_script_enabled: start_break_script_enabled.checked
+
+    property alias cfg_end_focus_script_filepath: end_focus_script_filepath.text
+    property alias cfg_end_focus_script_enabled: end_focus_script_enabled.checked
+    property alias cfg_end_break_script_filepath: end_break_script_filepath.text
+    property alias cfg_end_break_script_enabled: end_break_script_enabled.checked
+
 
     onCfg_clock_fontfamilyChanged: {
         if (cfg_clock_fontfamily) {
@@ -169,6 +182,112 @@ ColumnLayout {
         }
     }
 
+    GroupBox {
+        Layout.fillWidth: true
+
+        title: i18n("Scripts")
+
+        flat: true
+
+        ColumnLayout {
+            width: parent.width
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: start_focus_script_enabled
+                    text: i18n("Start focus:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: start_focus_script_filepathDialog.visible = true
+                    enabled: cfg_start_focus_script_enabled
+                }
+                TextField {
+                    id: start_focus_script_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_start_focus_script_enabled
+                    placeholderText: ""
+                }
+            }
+
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: start_break_script_enabled
+                    text: i18n("Start break:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: start_break_script_filepathDialog.visible = true
+                    enabled: cfg_start_break_script_enabled
+                }
+                TextField {
+                    id: start_break_script_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_start_break_script_enabled
+                    placeholderText: ""
+                }
+            }
+
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: end_focus_script_enabled
+                    text: i18n("End focus:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: end_focus_script_filepathDialog.visible = true
+                    enabled: cfg_end_focus_script_enabled
+                }
+                TextField {
+                    id: end_focus_script_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_end_focus_script_enabled
+                    placeholderText: ""
+                }
+            }
+
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: end_break_script_enabled
+                    text: i18n("End break:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: end_break_script_filepathDialog.visible = true
+                    enabled: cfg_end_break_script_enabled
+                }
+                TextField {
+                    id: end_break_script_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_end_break_script_enabled
+                    placeholderText: ""
+                }
+            }
+
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: stop_script_enabled
+                    text: i18n("Stop:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: stop_script_filepathDialog.visible = true
+                    enabled: cfg_stop_script_enabled
+                }
+                TextField {
+                    id: stop_script_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_stop_script_enabled
+                    placeholderText: ""
+                }
+            }
+        }
+    }
+
     Item {
         // tighten layout
         Layout.fillHeight: true
@@ -196,6 +315,76 @@ ColumnLayout {
         onAccepted: {
             console.log("You chose: " + fileUrls)
             cfg_timer_stop_sfx_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: stop_script_filepathDialog
+        title: i18n("Choose stop action script")
+        folder: '~/'
+        nameFilters: [ "Script file (*.sh)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_stop_script_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: start_focus_script_filepathDialog
+        title: i18n("Choose start focus action script")
+        folder: '~/'
+        nameFilters: [ "Script file (*.sh)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_start_focus_script_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: start_break_script_filepathDialog
+        title: i18n("Choose start break action script")
+        folder: '~/'
+        nameFilters: [ "Script file (*.sh)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_start_break_script_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: end_focus_script_filepathDialog
+        title: i18n("Choose end focus action script")
+        folder: '~/'
+        nameFilters: [ "Script file (*.sh)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_end_focus_script_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: end_break_script_filepathDialog
+        title: i18n("Choose end break action script")
+        folder: '~/'
+        nameFilters: [ "Script file (*.sh)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_end_break_script_filepath = fileUrl
         }
         onRejected: {
             console.log("Canceled")

@@ -37,6 +37,34 @@ Item {
         id: notificationManager
     }
 
+
+    PlasmaCore.DataSource {
+        id: executable
+        engine: "executable"
+        connectedSources: []
+        property var callbacks: ({})
+        onNewData: {
+            var stdout = data["stdout"]
+
+            if (callbacks[sourceName] !== undefined) {
+                callbacks[sourceName](stdout);
+            }
+
+            exited(sourceName, stdout)
+            disconnectSource(sourceName) // cmd finished
+        }
+
+        function exec(cmd, onNewDataCallback) {
+            if (onNewDataCallback !== undefined){
+                callbacks[cmd] = onNewDataCallback
+            }
+            connectSource(cmd)
+
+        }
+        signal exited(string sourceName, string stdout)
+
+    }
+
     Plasmoid.toolTipMainText: formatNumberLength(
                                   min, 2) + ":" + formatNumberLength(sec, 2)
     Plasmoid.toolTipSubText: ""
@@ -68,30 +96,6 @@ Item {
         Layout.maximumWidth: units.gridUnit * 12
         Layout.minimumHeight: units.gridUnit * 11
         Layout.maximumHeight: units.gridUnit * 11
-
-        property bool isPinVisible: {
-            return plasmoid.location !== PlasmaCore.Types.Floating
-        }
-
-        Binding {
-            target: plasmoid
-            property: "hideOnWindowDeactivate"
-            value: !plasmoid.configuration.pin
-        }
-
-        PlasmaComponents.ToolButton {
-            visible: isPinVisible
-            anchors {
-                right: parent.right
-                top: parent.top
-            }
-            width: Math.round(units.gridUnit * 1.25)
-            height: width
-            checkable: true
-            iconSource: "window-pin"
-            checked: plasmoid.configuration.pin
-            onCheckedChanged: plasmoid.configuration.pin = checked
-        }
 
         Timer {
             id: textTimer
@@ -159,11 +163,11 @@ Item {
             ProgressCircle {
                 id: progressCircle
                 anchors.centerIn: parent
-                size: Math.min(parent.width / 1.1, parent.height / 1.1)
+                size: Math.min(parent.width / 1.4, parent.height / 1.4)
                 colorCircle: theme.buttonFocusColor
                 arcBegin: 0
                 arcEnd: Math.ceil((currTime / maxTime) * 360)
-                lineWidth: size / 20
+                lineWidth: size / 30
             }
 
             Column {
@@ -175,7 +179,7 @@ Item {
                     text: formatNumberLength(min,
                                              2) + ":" + formatNumberLength(sec,
                                                                            2)
-                    font.pointSize: progressCircle.width / 7
+                    font.pointSize: progressCircle.width / 8
                     font.family: clock_fontfamily
                     anchors.horizontalCenter: parent.horizontalCenter
 
@@ -219,11 +223,12 @@ Item {
                     anchors {
                         bottom: time.top
                         horizontalCenter: parent.horizontalCenter
+                        bottomMargin: progressCircle.width / 15
                     }
 
                     spacing: progressCircle.width / 25
                     delegate: Rectangle {
-                        implicitWidth: progressCircle.width / 25
+                        implicitWidth: progressCircle.width / 34
                         implicitHeight: width
                         radius: width / 2
                         color: theme.textColor
@@ -241,11 +246,12 @@ Item {
                 PlasmaComponents.Label {
                     id: status
                     text: "focus"
-                    font.pointSize: progressCircle.width / 15
+                    font.pointSize: progressCircle.width / 24
 
                     anchors {
                         top: time.bottom
                         horizontalCenter: parent.horizontalCenter
+                        topMargin: progressCircle.width / 20
                     }
 
                 }
@@ -254,7 +260,7 @@ Item {
 
         RowLayout {
             id: buttonsRow
-            spacing: 8
+            spacing: 10
 
             anchors {
                 horizontalCenter: parent.horizontalCenter
@@ -293,7 +299,8 @@ Item {
         }
 
         function start() {
-            notificationManager.start(stateVal)
+//             notificationManager.start(stateVal)
+            executeScript(1)
             textTimer.start()
             sessionBtn.text = "Pause"
             sessionBtn.iconSource = "media-playback-pause"
@@ -309,24 +316,9 @@ Item {
                                              "icons/pomodoro-start-light.svg")
         }
 
-        function skip() {
-            nextState()
-            resetTime()
-        }
-
-        function stop() {
-            notificationManager.stop()
-            textTimer.stop()
-            stateVal = 1
-            resetTime()
-            sessionBtn.text = "Start"
-            sessionBtn.iconSource = "media-playback-start"
-            customIconSource = plasmoid.file("",
-                                             "icons/pomodoro-start-light.svg")
-        }
-
         function end() {
-            notificationManager.end()
+            notificationManager.end(stateVal)
+            executeScript(2)
             textTimer.stop()
             sessionBtn.text = "Start"
             sessionBtn.iconSource = "media-playback-start"
@@ -340,25 +332,92 @@ Item {
             }
         }
 
+        function skip() {
+            nextState()
+            resetTime()
+        }
+
+        function stop() {
+//             notificationManager.stop()
+            executeScript(0)
+            textTimer.stop()
+            stateVal = 1
+            resetTime()
+            sessionBtn.text = "Start"
+            sessionBtn.iconSource = "media-playback-start"
+            customIconSource = plasmoid.file("",
+                                             "icons/pomodoro-start-light.svg")
+        }
+
+        function executeScript(state) {
+            switch (state) {
+                case 0:
+                    if (plasmoid.configuration.stop_script_enabled) {
+                        executable.exec("sh " + plasmoid.configuration.stop_script_filepath);
+                    }
+                    break
+                case 1:
+                    switch (stateVal) {
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                            if (plasmoid.configuration.start_focus_script_enabled) {
+                                executable.exec("sh " + plasmoid.configuration.start_focus_script_filepath);
+                            }
+                            break
+                        case 2:
+                        case 4:
+                        case 6:
+                        case 8:
+                            if (plasmoid.configuration.start_break_script_enabled) {
+                                executable.exec("sh " + plasmoid.configuration.start_break_script_filepath);
+                            }
+                            break
+                    }
+                    break
+                case 2:
+                    switch (stateVal) {
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                            if (plasmoid.configuration.end_focus_script_enabled) {
+                                executable.exec("sh " + plasmoid.configuration.end_focus_script_filepath);
+                            }
+                            break
+                        case 2:
+                        case 4:
+                        case 6:
+                        case 8:
+                            if (plasmoid.configuration.end_break_script_enabled) {
+                                executable.exec("sh " + plasmoid.configuration.end_break_script_filepath);
+                            }
+                            break
+                    }
+                    break
+            }
+        }
+
         function resetTime() {
             switch (stateVal) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-                min = plasmoid.configuration.focus_time
-                status.text = "focus"
-                break
-            case 2:
-            case 4:
-            case 6:
-                min = plasmoid.configuration.short_break_time
-                status.text = "short break"
-                break
-            case 8:
-                min = plasmoid.configuration.long_break_time
-                status.text = "long break"
-                break
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                    min = plasmoid.configuration.focus_time
+                    status.text = "focus"
+                    break
+                case 2:
+                case 4:
+                case 6:
+                    min = plasmoid.configuration.short_break_time
+                    status.text = "short break"
+                    break
+                case 8:
+                    min = plasmoid.configuration.long_break_time
+                    status.text = "long break"
+                    break
             }
 
             sec = 0

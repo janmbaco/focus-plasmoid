@@ -46,12 +46,30 @@ QtObject {
     }
 
     function end(args) {
-        createNotification({
+        switch (args) {
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+            createNotification({
                                "appName": "fokus",
                                "appIcon": "chronometer",
-                               "summary": "End of time.",
+                               "summary": "End of focus time.",
                                "soundFile": plasmoid.configuration.timer_stop_sfx_enabled ? plasmoid.configuration.timer_stop_sfx_filepath : undefined
                            })
+            break
+        case 2:
+        case 4:
+        case 8:
+        case 6:
+            createNotification({
+                               "appName": "fokus",
+                               "appIcon": "chronometer",
+                               "summary": "End of break.",
+                               "soundFile": plasmoid.configuration.timer_stop_sfx_enabled ? plasmoid.configuration.timer_stop_sfx_filepath : undefined
+                           })
+            break
+        }
     }
 
     function stop(args) {
