@@ -16,13 +16,13 @@ Item {
 
     property string clock_fontfamily: plasmoid.configuration.clock_fontfamily || "Noto Mono"
 
-    property var min: plasmoid.configuration.focus_time
-    property var sec: 0
     property var stateVal: 1
-    property var maxTime: plasmoid.configuration.focus_time * 60
-    property var currTime: plasmoid.configuration.focus_time * 60
+    property var maxSeconds: plasmoid.configuration.focus_time * 60
+    property var countdownSeconds: maxSeconds
+    property var countdownMilliseconds: countdownSeconds * 1000
     property var customIconSource: plasmoid.file(
                                        "", "icons/pomodoro-start-light.svg")
+    property var previousTime: new Date()
 
     function formatNumberLength(num, length) {
         var r = "" + num
@@ -33,10 +33,24 @@ Item {
         return r
     }
 
+    function shiftCountdown(seconds) {
+        if (countdownSeconds + seconds > 0) {
+            countdownMilliseconds += seconds * 1000
+            countdownSeconds += seconds
+            maxSeconds += seconds
+        }
+    }
+
+    function formatCountdown() {
+        var sec = countdownSeconds % 60
+        var min = Math.floor(countdownSeconds / 60)
+
+        return formatNumberLength(min, 2) + ":" + formatNumberLength(sec, 2)
+    }
+
     NotificationManager {
         id: notificationManager
     }
-
 
     PlasmaCore.DataSource {
         id: executable
@@ -62,11 +76,9 @@ Item {
 
         }
         signal exited(string sourceName, string stdout)
-
     }
 
-    Plasmoid.toolTipMainText: formatNumberLength(
-                                  min, 2) + ":" + formatNumberLength(sec, 2)
+    Plasmoid.toolTipMainText: formatCountdown()
     Plasmoid.toolTipSubText: ""
 
     Plasmoid.compactRepresentation: MouseArea {
@@ -99,7 +111,7 @@ Item {
 
         Timer {
             id: textTimer
-            interval: 1000
+            interval: 100
             repeat: true
             running: false
             triggeredOnStart: false
@@ -137,15 +149,9 @@ Item {
 
                     while (increment != 0) {
                         if(increment > 0) {
-                            min += 1
-                            currTime += 60
-                            maxTime += 60
+                            shiftCountdown(60)
                         } else {
-                            if(currTime > 60) {
-                                min -= 1
-                                currTime -= 60
-                                maxTime -= 60
-                            }
+                            shiftCountdown(-60)
                         }
 
                         time.update()
@@ -166,7 +172,7 @@ Item {
                 size: Math.min(parent.width / 1.4, parent.height / 1.4)
                 colorCircle: theme.buttonFocusColor
                 arcBegin: 0
-                arcEnd: Math.ceil((currTime / maxTime) * 360)
+                arcEnd: Math.ceil((countdownSeconds / maxSeconds) * 360)
                 lineWidth: size / 30
             }
 
@@ -176,24 +182,27 @@ Item {
 
                 PlasmaComponents.Label {
                     id: time
-                    text: formatNumberLength(min,
-                                             2) + ":" + formatNumberLength(sec,
-                                                                           2)
+                    text: formatCountdown()
                     font.pointSize: progressCircle.width / 8
                     font.family: clock_fontfamily
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     function set() {
-                        if (sec == 0) {
-                            min--
-                            sec = 59
-                        } else {
-                            sec--
+                        var currentTime = new Date()
+                        var timeDiff = currentTime.getTime() - previousTime.getTime()
+                        previousTime = currentTime
+
+                        var oldCountdownSeconds = Math.ceil(countdownMilliseconds / 1000)
+                        countdownMilliseconds -= timeDiff
+                        var newCountdownSeconds = Math.ceil(countdownMilliseconds / 1000)
+
+                        // Avoid too fast countdown when relying solely on QML's Timer
+                        if (newCountdownSeconds === oldCountdownSeconds) {
+                            return;
                         }
+                        countdownSeconds--
 
-                        currTime--
-
-                        if (currTime == 0) {
+                        if (countdownSeconds <= 0) {
                             end()
                         }
 
@@ -201,15 +210,14 @@ Item {
                     }
 
                     function update() {
-                        time.text = formatNumberLength(
-                                    min, 2) + ":" + formatNumberLength(sec, 2)
+                        time.text = formatCountdown()
 
                         if (textTimer.running) {
                             customIconSource = plasmoid.file(
                                         "",
                                         "icons/pomodoro-indicator-light-" + formatNumberLength(
                                             Math.ceil(
-                                                (currTime / maxTime) * 61),
+                                                (countdownSeconds / maxSeconds) * 61),
                                             2) + ".svg")
                         }
                     }
@@ -300,6 +308,7 @@ Item {
 
         function start() {
 //             notificationManager.start(stateVal)
+            previousTime = new Date()
             executeScript(1)
             textTimer.start()
             sessionBtn.text = "Pause"
@@ -405,24 +414,24 @@ Item {
                 case 3:
                 case 5:
                 case 7:
-                    min = plasmoid.configuration.focus_time
+                    maxSeconds = plasmoid.configuration.focus_time * 60
                     status.text = "focus"
                     break
                 case 2:
                 case 4:
                 case 6:
-                    min = plasmoid.configuration.short_break_time
+                    maxSeconds = plasmoid.configuration.short_break_time * 60
                     status.text = "short break"
                     break
                 case 8:
-                    min = plasmoid.configuration.long_break_time
+                    maxSeconds = plasmoid.configuration.long_break_time * 60
                     status.text = "long break"
                     break
             }
 
-            sec = 0
-            currTime = min * 60
-            maxTime = currTime
+            previousTime = new Date()
+            countdownSeconds = maxSeconds
+            countdownMilliseconds = countdownSeconds * 1000
             time.update()
         }
 
