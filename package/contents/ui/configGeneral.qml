@@ -293,6 +293,11 @@ ColumnLayout {
         Layout.fillHeight: true
     }
 
+    function getPath(fileUrl) {
+        // remove prefixed "file://"
+        return fileUrl.toString().replace(/^file:\/\//,"");
+    }
+
     FileDialog {
         id: timer_start_sfx_filepathDialog
         title: i18n("Choose a sound effect")
@@ -328,7 +333,7 @@ ColumnLayout {
         nameFilters: [ "Script file (*.sh)", "All files (*)" ]
         onAccepted: {
             console.log("You chose: " + fileUrls)
-            cfg_stop_script_filepath = fileUrl
+            cfg_stop_script_filepath = getPath(fileUrl)
         }
         onRejected: {
             console.log("Canceled")
@@ -342,7 +347,7 @@ ColumnLayout {
         nameFilters: [ "Script file (*.sh)", "All files (*)" ]
         onAccepted: {
             console.log("You chose: " + fileUrls)
-            cfg_start_focus_script_filepath = fileUrl
+            cfg_start_focus_script_filepath = getPath(fileUrl)
         }
         onRejected: {
             console.log("Canceled")
@@ -356,7 +361,7 @@ ColumnLayout {
         nameFilters: [ "Script file (*.sh)", "All files (*)" ]
         onAccepted: {
             console.log("You chose: " + fileUrls)
-            cfg_start_break_script_filepath = fileUrl
+            cfg_start_break_script_filepath = getPath(fileUrl)
         }
         onRejected: {
             console.log("Canceled")
@@ -370,7 +375,7 @@ ColumnLayout {
         nameFilters: [ "Script file (*.sh)", "All files (*)" ]
         onAccepted: {
             console.log("You chose: " + fileUrls)
-            cfg_end_focus_script_filepath = fileUrl
+            cfg_end_focus_script_filepath = getPath(fileUrl)
         }
         onRejected: {
             console.log("Canceled")
@@ -384,7 +389,8 @@ ColumnLayout {
         nameFilters: [ "Script file (*.sh)", "All files (*)" ]
         onAccepted: {
             console.log("You chose: " + fileUrls)
-            cfg_end_break_script_filepath = fileUrl
+
+            cfg_end_break_script_filepath = getPath(fileUrl)
         }
         onRejected: {
             console.log("Canceled")
