@@ -97,7 +97,7 @@ Item {
         ColorOverlay {
             anchors.fill: trayIcon
             source: trayIcon
-            color: theme.textColor
+            color: getTextColor()
         }
     }
 
@@ -170,7 +170,7 @@ Item {
                 id: progressCircle
                 anchors.centerIn: parent
                 size: Math.min(parent.width / 1.4, parent.height / 1.4)
-                colorCircle: theme.buttonFocusColor
+                colorCircle: getCircleColor()
                 arcBegin: 0
                 arcEnd: Math.ceil((countdownSeconds / maxSeconds) * 360)
                 lineWidth: size / 30
@@ -255,6 +255,7 @@ Item {
                     id: status
                     text: "focus"
                     font.pointSize: progressCircle.width / 24
+                    color: getTextColor()
 
                     anchors {
                         top: time.bottom
@@ -433,6 +434,28 @@ Item {
             countdownSeconds = maxSeconds
             countdownMilliseconds = countdownSeconds * 1000
             time.update()
+            progressCircle.requestPaint()
+        }
+
+        function getCircleColor() {
+            var color
+
+            switch (stateVal) {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                    color = theme.buttonFocusColor
+                    break
+                case 2:
+                case 4:
+                case 6:
+                case 8:
+                    color = theme.disabledTextColor
+                    break
+            }
+
+            return color
         }
 
         function nextState() {
@@ -442,5 +465,26 @@ Item {
                 stateVal = 1
             }
         }
+    }
+
+    function getTextColor() {
+        var color
+
+        switch (stateVal) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+                color = theme.textColor
+                break
+            case 2:
+            case 4:
+            case 6:
+            case 8:
+                color = theme.disabledTextColor
+                break
+        }
+
+        return color
     }
 }

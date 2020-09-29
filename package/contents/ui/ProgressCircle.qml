@@ -27,6 +27,10 @@ Item {
     onArcBeginChanged: canvas.requestPaint()
     onArcEndChanged: canvas.requestPaint()
 
+    function requestPaint() {
+        canvas.requestPaint()
+    }
+
     Behavior on arcBegin {
        id: animationArcBegin
        enabled: true
@@ -89,4 +93,4 @@ Item {
             }
         }
     }
-} 
+}
