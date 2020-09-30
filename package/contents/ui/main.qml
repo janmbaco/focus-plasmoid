@@ -24,6 +24,8 @@ Item {
                                        "", "icons/pomodoro-start-light.svg")
     property var previousTime: new Date()
 
+    Plasmoid.status: PlasmaCore.Types.PassiveStatus
+
     function formatNumberLength(num, length) {
         var r = "" + num
         while (r.length < length) {
@@ -316,6 +318,7 @@ Item {
             sessionBtn.iconSource = "media-playback-pause"
             customIconSource = plasmoid.file(
                         "", "icons/pomodoro-indicator-light-61.svg")
+            Plasmoid.status = PlasmaCore.Types.ActiveStatus
         }
 
         function pause() {
@@ -339,6 +342,8 @@ Item {
 
             if (plasmoid.configuration.timer_auto_next_enabled) {
                 start()
+            } else {
+                Plasmoid.status = PlasmaCore.Types.PassiveStatus
             }
         }
 
@@ -357,6 +362,7 @@ Item {
             sessionBtn.iconSource = "media-playback-start"
             customIconSource = plasmoid.file("",
                                              "icons/pomodoro-start-light.svg")
+            Plasmoid.status = PlasmaCore.Types.PassiveStatus
         }
 
         function executeScript(state) {
