@@ -85,8 +85,13 @@ Item {
 
     Plasmoid.compactRepresentation: MouseArea {
         id: compactRoot
+        property int wheelDelta: 0
 
         onClicked: plasmoid.expanded = !plasmoid.expanded
+
+        onWheel: {
+            wheelDelta = scrollByWheel(wheelDelta, wheel.angleDelta.y);
+        }
 
         PlasmaCore.IconItem {
             id: trayIcon
@@ -100,6 +105,37 @@ Item {
             anchors.fill: trayIcon
             source: trayIcon
             color: getTextColor()
+        }
+
+        function scrollByWheel(wheelDelta, eventDelta) {
+            // magic number 120 for common "one click"
+            // See: http://qt-project.org/doc/qt-5/qml-qtquick-wheelevent.html#angleDelta-prop
+            wheelDelta += eventDelta;
+
+            var increment = 0;
+
+            while (wheelDelta >= 120) {
+                wheelDelta -= 120;
+                increment++;
+            }
+
+            while (wheelDelta <= -120) {
+                wheelDelta += 120;
+                increment--;
+            }
+
+            while (increment != 0) {
+                if(increment > 0) {
+                    shiftCountdown(60)
+                } else {
+                    shiftCountdown(-60)
+                }
+
+                time.update()
+                increment += (increment < 0) ? 1 : -1;
+            }
+
+            return wheelDelta;
         }
     }
 
