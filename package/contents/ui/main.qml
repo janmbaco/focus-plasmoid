@@ -666,7 +666,7 @@ Item {
                 if (blinkOnTicking) {
                     if (!blinkState) {
                         customIconSource = plasmoid.file(
-                            "", "icons/pomodoro-red-light.svg")
+                            "", "icons/pomodoro-indicator-light-61.svg")
                     }
                     blinkState = !blinkState
                 }
@@ -732,7 +732,14 @@ Item {
             case 3:
             case 5:
             case 7:
-                color = theme.textColor
+                if (countdownSeconds <= tickingSeconds && countdownSeconds > 0
+                    && plasmoid.configuration.timer_tick_sfx_enabled && !isBreak()
+                    && blinkOnTicking && blinkState) {
+                    // Show icon in red when "Blinking icon" is enabled to attract attention
+                    color = "red"
+                } else {
+                    color = theme.textColor
+                }
                 break
             case 2:
             case 4:
