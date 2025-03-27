@@ -11,6 +11,7 @@ ColumnLayout {
     property alias cfg_short_break_time: short_break_time.value
     property alias cfg_long_break_time: long_break_time.value
     property alias cfg_ticking_time: ticking_time.value
+    property alias cfg_blink_on_ticking_time: blink_on_ticking_time.checked
     property string cfg_clock_fontfamily: ""
     property alias cfg_timer_start_sfx_enabled: timer_start_sfx_enabled.checked
     property alias cfg_timer_start_sfx_filepath: timer_start_sfx_filepath.text
@@ -196,6 +197,16 @@ ColumnLayout {
                     id: ticking_time
                     suffix: i18ncp("Time in seconds", " s", " s", value)
                     maximumValue: 60
+                }
+            }
+
+            RowLayout {
+                Label {
+                    text: i18n("Blinking icon during ticking time: ")
+                }
+
+                CheckBox {
+                    id: blink_on_ticking_time
                 }
             }
         }
