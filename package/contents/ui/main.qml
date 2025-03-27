@@ -23,6 +23,7 @@ Item {
     property var countdownSeconds: maxSeconds
     property var countdownMilliseconds: countdownSeconds * 1000
     property var tickingSeconds: plasmoid.configuration.ticking_time
+    property var blinkOnTicking: plasmoid.configuration.blink_on_ticking_time
     property var customIconSource: plasmoid.file(
                                        "", "icons/pomodoro-start-light.svg")
     property var sessionBtnText: "Start"
@@ -30,6 +31,7 @@ Item {
     property var statusText: "focus"
     property var timeText: formatCountdown()
     property var previousTime: new Date()
+    property var blinkState: false
 
     Audio {
         id: sfx
@@ -661,6 +663,13 @@ Item {
                 sfx.source = plasmoid.configuration.timer_tick_sfx_filepath
                 sfx.volume = 1.0 - (countdownSeconds / tickingSeconds)
                 sfx.play()
+                if (blinkOnTicking) {
+                    if (!blinkState) {
+                        customIconSource = plasmoid.file(
+                            "", "icons/pomodoro-red-light.svg")
+                    }
+                    blinkState = !blinkState
+                }
             }
         }
     }
