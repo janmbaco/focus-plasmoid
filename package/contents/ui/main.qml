@@ -344,7 +344,7 @@ PlasmoidItem {
     MediaPlayer {
         id: sfx
 
-        audioOutput: AudioOutput {}
+        audioOutput: AudioOutput {}Branch master already ex
     }
 
     Timer {
