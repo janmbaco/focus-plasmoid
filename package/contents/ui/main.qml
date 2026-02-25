@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.1
 import QtQuick.Controls 2.0 as Controls
 import QtQuick.Window 2.0
 import QtGraphicalEffects 1.0
+import QtMultimedia 5.4
 
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -21,6 +22,7 @@ Item {
     property var maxSeconds: plasmoid.configuration.focus_time * 60
     property var countdownSeconds: maxSeconds
     property var countdownMilliseconds: countdownSeconds * 1000
+    property var tickingSeconds: plasmoid.configuration.ticking_time
     property var customIconSource: plasmoid.file(
                                        "", "icons/pomodoro-start-light.svg")
     property var sessionBtnText: "Start"
@@ -28,6 +30,10 @@ Item {
     property var statusText: "focus"
     property var timeText: formatCountdown()
     property var previousTime: new Date()
+
+    Audio {
+        id: sfx
+    }
 
     Plasmoid.status: PlasmaCore.Types.PassiveStatus
     Plasmoid.backgroundHints: PlasmaCore.Types.DefaultBackground | PlasmaCore.Types.ConfigurableBackground
@@ -75,7 +81,6 @@ Item {
     Plasmoid.toolTipSubText: getToolTipText()
 
     Component.onCompleted: {
-        console.log("Hello World")
         if(plasmoid.configuration.autostart) {
             start()
         }
@@ -207,46 +212,6 @@ Item {
         Column {
             anchors.fill: parent
 
-            MouseArea {
-                anchors.fill: parent
-                property int wheelDelta: 0
-
-                function scrollByWheel(wheelDelta, eventDelta) {
-                    // magic number 120 for common "one click"
-                    // See: http://qt-project.org/doc/qt-5/qml-qtquick-wheelevent.html#angleDelta-prop
-                    wheelDelta += eventDelta;
-
-                    var increment = 0;
-
-                    while (wheelDelta >= 120) {
-                        wheelDelta -= 120;
-                        increment++;
-                    }
-
-                    while (wheelDelta <= -120) {
-                        wheelDelta += 120;
-                        increment--;
-                    }
-
-                    while (increment != 0) {
-                        if(increment > 0) {
-                            shiftCountdown(60)
-                        } else {
-                            shiftCountdown(-60)
-                        }
-
-                        updateTime()
-                        increment += (increment < 0) ? 1 : -1;
-                    }
-
-                    return wheelDelta;
-                }
-
-                onWheel: {
-                    wheelDelta = scrollByWheel(wheelDelta, wheel.angleDelta.y);
-                }
-            }
-
             ProgressCircle {
                 id: dialogProgressCircle
                 anchors.centerIn: parent
@@ -316,6 +281,7 @@ Item {
 
             RowLayout {
                 spacing: 10
+                visible: !plasmoid.configuration.hide_fullscreen_buttons
 
                 anchors {
                     horizontalCenter: parent.horizontalCenter
@@ -584,6 +550,7 @@ Item {
         notificationManager.end(stateVal)
         executeScript(2)
         timer.stop()
+        breakDialog.hide()
         sessionBtnText = "Start"
         sessionBtnIconSource = "media-playback-start"
         customIconSource = plasmoid.file("",
@@ -679,7 +646,6 @@ Item {
     }
 
     function updateTime() {
-                console.log("update time")
         timeText = formatCountdown()
 
         if (timer.running) {
@@ -689,6 +655,13 @@ Item {
                             Math.ceil(
                                 (countdownSeconds / maxSeconds) * 61),
                             2) + ".svg")
+
+            if (countdownSeconds <= tickingSeconds && countdownSeconds > 0
+                    && plasmoid.configuration.timer_tick_sfx_enabled && !isBreak()) {
+                sfx.source = plasmoid.configuration.timer_tick_sfx_filepath
+                sfx.volume = 1.0 - (countdownSeconds / tickingSeconds)
+                sfx.play()
+            }
         }
     }
 
@@ -697,6 +670,21 @@ Item {
             stateVal++
         } else {
             stateVal = 1
+        }
+
+        switch (stateVal) {
+            case 2:
+            case 4:
+            case 6:
+                if(plasmoid.configuration.short_break_time == 0) {
+                    nextState()
+                }
+                break
+            case 8:
+                if(plasmoid.configuration.long_break_time == 0) {
+                    nextState()
+                }
+                break
         }
     }
 

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.0
+import QtMultimedia 5.4
 
 ColumnLayout {
     id: appearancePage
@@ -9,11 +10,14 @@ ColumnLayout {
     property alias cfg_focus_time: focus_time.value
     property alias cfg_short_break_time: short_break_time.value
     property alias cfg_long_break_time: long_break_time.value
+    property alias cfg_ticking_time: ticking_time.value
     property string cfg_clock_fontfamily: ""
     property alias cfg_timer_start_sfx_enabled: timer_start_sfx_enabled.checked
     property alias cfg_timer_start_sfx_filepath: timer_start_sfx_filepath.text
     property alias cfg_timer_stop_sfx_enabled: timer_stop_sfx_enabled.checked
     property alias cfg_timer_stop_sfx_filepath: timer_stop_sfx_filepath.text
+    property alias cfg_timer_tick_sfx_enabled: timer_tick_sfx_enabled.checked
+    property alias cfg_timer_tick_sfx_filepath: timer_tick_sfx_filepath.text
     property alias cfg_timer_auto_next_enabled: timer_auto_next_enabled.checked
     property alias cfg_stop_script_filepath: stop_script_filepath.text
     property alias cfg_stop_script_enabled: stop_script_enabled.checked
@@ -30,6 +34,7 @@ ColumnLayout {
 
     property alias cfg_show_time_in_compact_mode: show_time_in_compact_mode.checked
     property alias cfg_show_fullscreen_break: show_fullscreen_break.checked
+    property alias cfg_hide_fullscreen_buttons: hide_fullscreen_buttons.checked
     property alias cfg_autostart: autostart.checked
 
     onCfg_clock_fontfamilyChanged: {
@@ -41,6 +46,10 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    Audio {
+        id: sfx
     }
 
     GroupBox {
@@ -100,6 +109,16 @@ ColumnLayout {
                     id: show_fullscreen_break
                 }
             }
+
+            RowLayout {
+                Label {
+                    text: i18n("Hide fullscreen buttons: ")
+                }
+
+                CheckBox {
+                    id: hide_fullscreen_buttons
+                }
+            }
         }
     }
 
@@ -138,6 +157,8 @@ ColumnLayout {
 
                 SpinBox {
                     id: focus_time
+                    maximumValue: 9999
+                    minimumValue: 1
                     suffix: i18ncp("Time in minutes", " min", " min", value)
                 }
             }
@@ -149,6 +170,7 @@ ColumnLayout {
 
                 SpinBox {
                     id: short_break_time
+                    maximumValue: 9999
                     suffix: i18ncp("Time in minutes", " min", " min", value)
                 }
             }
@@ -160,7 +182,20 @@ ColumnLayout {
 
                 SpinBox {
                     id: long_break_time
+                    maximumValue: 9999
                     suffix: i18ncp("Time in minutes", " min", " min", value)
+                }
+            }
+
+            RowLayout {
+                Label {
+                    text: i18n("Ticking time: ")
+                }
+
+                SpinBox {
+                    id: ticking_time
+                    suffix: i18ncp("Time in seconds", " s", " s", value)
+                    maximumValue: 60
                 }
             }
         }
@@ -192,6 +227,14 @@ ColumnLayout {
                     enabled: cfg_timer_start_sfx_enabled
                     placeholderText: "/usr/share/sounds/freedesktop/stereo/dialog-information.oga"
                 }
+                Button {
+                    iconName: "media-playback-start"
+                    onClicked: {
+                        sfx.source = timer_start_sfx_filepath.text
+                        sfx.volume = 1.0
+                        sfx.play()
+                    }
+                }
             }
 
             RowLayout {
@@ -210,6 +253,41 @@ ColumnLayout {
                     Layout.fillWidth: true
                     enabled: cfg_timer_stop_sfx_enabled
                     placeholderText: "/usr/share/sounds/freedesktop/stereo/complete.oga"
+                }
+                Button {
+                    iconName: "media-playback-start"
+                    onClicked: {
+                        sfx.source = timer_stop_sfx_filepath.text
+                        sfx.volume = 1.0
+                        sfx.play()
+                    }
+                }
+            }
+
+            RowLayout {
+                Text { width: indentWidth } // indent
+                CheckBox {
+                    id: timer_tick_sfx_enabled
+                    text: i18n("Countdown tick:")
+                }
+                Button {
+                    text: i18n("Choose")
+                    onClicked: timer_tick_sfx_filepathDialog.visible = true
+                    enabled: cfg_timer_tick_sfx_enabled
+                }
+                TextField {
+                    id: timer_tick_sfx_filepath
+                    Layout.fillWidth: true
+                    enabled: cfg_timer_tick_sfx_enabled
+                    placeholderText: "/usr/share/sounds/freedesktop/stereo/dialog-warning.oga"
+                }
+                Button {
+                    iconName: "media-playback-start"
+                    onClicked: {
+                        sfx.source = timer_tick_sfx_filepath.text
+                        sfx.volume = 1.0
+                        sfx.play()
+                    }
                 }
             }
         }
@@ -353,6 +431,20 @@ ColumnLayout {
         onAccepted: {
             console.log("You chose: " + fileUrls)
             cfg_timer_stop_sfx_filepath = fileUrl
+        }
+        onRejected: {
+            console.log("Canceled")
+        }
+    }
+
+    FileDialog {
+        id: timer_tick_sfx_filepathDialog
+        title: i18n("Choose a sound effect")
+        folder: '/usr/share/sounds'
+        nameFilters: [ "Sound files (*.wav *.mp3 *.oga *.ogg)", "All files (*)" ]
+        onAccepted: {
+            console.log("You chose: " + fileUrls)
+            cfg_timer_tick_sfx_filepath = fileUrl
         }
         onRejected: {
             console.log("Canceled")
